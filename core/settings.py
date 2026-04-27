@@ -64,7 +64,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:postgres@127.0.0.1:5432/gst_saas',
+        default=f'sqlite:///{BASE_DIR}/db.sqlite3',
         conn_max_age=600
     )
 }
