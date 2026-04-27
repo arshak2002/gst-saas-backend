@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 30px;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        .header-section {
+            display: block;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #4f46e5;
+            padding-bottom: 20px;
+        }
+
+        .logo-box {
+            float: left;
+            width: 250px;
+        }
+
+        .logo-box img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .logo-box span {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4f46e5;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        .title-box {
+            float: right;
+            text-align: right;
+        }
+
+        .title-box h1 {
+            margin: 0;
+            color: #4f46e5;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        .details-grid {
+            width: 100%;
+            margin-bottom: 30px;
+            clear: both;
+        }
+
+        .section {
+            width: 45%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .section h3 {
+            color: #64748b;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+        }
+
+        .totals {
+            float: right;
+            width: 300px;
+        }
+
+        .totals table th {
+            text-align: left;
+            background: none;
+            border: none;
+            color: #64748b;
+            padding: 8px;
+        }
+
+        .totals table td {
+            text-align: right;
+            padding: 8px;
+            border: none;
+        }
+
+        .grand-total {
+            background-color: #4f46e5 !important;
+            color: white !important;
+            font-weight: bold;
+            font-size: 16px !important;
+        }
+
+        .grand-total td {
+            color: white;
+            border: none;
+        }
+
+        .footer {
+            margin-top: 60px;
+            font-size: 10px;
+            color: #94a3b8;
+            text-align: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 20px;
+        }
+
+        .qr-code {
+            float: left;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .qr-code img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .qr-code p {
+            font-size: 8px;
+            margin-top: 5px;
+        }
+
+        .rcm-badge {
+            display: inline-block;
+            background: #fff7ed;
+            color: #9a3412;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-section">
+        <div class="logo-box">
+            {% if logo_path %}
+            <img src="file://{{ logo_path }}" alt="Logo">
+            {% endif %}
+            <span>Saskell</span>
+        </div>
+        <div class="title-box">
+            <h1>{{ invoice.get_type_display|upper }}</h1>
+            {% if invoice.status == 'DRAFT' %}
+            <div style="color: #f59e0b; font-weight: bold;">DRAFT PREVIEW</div>
+            {% endif %}
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="details-grid">
+        <div class="section">
+            <h3>Billed By</h3>
+            <strong>{{ business.name }}</strong><br>
+            {{ business.address|linebreaksbr }}<br>
+            State: {{ business.state }}<br>
+            GSTIN: <strong>{{ business.gstin }}</strong>
+        </div>
+        <div class="section" style="float: right; text-align: right;">
+            <h3>Billed To</h3>
+            <strong>{{ customer.name }}</strong><br>
+            {{ customer.address|linebreaksbr }}<br>
+            State: {{ customer.state }}<br>
+            GSTIN: {{ customer.gstin|default:"N/A" }}
+        </div>
+    </div>
+
+    <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+        <table style="margin: 0; border: none;">
+            <tr style="border: none;">
+                <td style="border: none; width: 50%;">
+                    <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">Doc Number</span><br>
+                    <strong>{{ invoice.invoice_number }}</strong>
+                </td>
+                <td style="border: none; text-align: right;">
+                    <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">Date</span><br>
+                    <strong>{{ invoice.invoice_date }}</strong>
+                </td>
+            </tr>
+            <tr style="border: none;">
+                <td style="border: none;">
+                    <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">Due Date</span><br>
+                    <strong>{{ invoice.due_date|default:"-" }}</strong>
+                </td>
+                <td style="border: none; text-align: right;">
+                    <span style="color: #64748b; font-size: 11px; text-transform: uppercase;">Place of Supply</span><br>
+                    <strong>{{ invoice.place_of_supply|default:customer.state }}</strong>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align: left;">Product/Service</th>
+                <th>HSN</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Taxable</th>
+                <th>GST</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td><strong>{{ item.product.name }}</strong></td>
+                <td>{{ item.product.hsn_sac }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.rate }}</td>
+                <td>{{ item.taxable_value }}</td>
+                <td>
+                    {% if item.igst > 0 %}
+                    IGST ({{ item.product.gst_rate }}%)
+                    {% else %}
+                    CGST+SGST ({{ item.product.gst_rate }}%)
+                    {% endif %}
+                </td>
+                <td style="text-align: right; font-weight: bold;">&#8377;{{ item.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <table>
+            <tr>
+                <th>Subtotal</th>
+                <td>&#8377;{{ invoice.subtotal }}</td>
+            </tr>
+            {% if invoice.igst > 0 %}
+            <tr>
+                <th>IGST</th>
+                <td>&#8377;{{ invoice.igst }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <th>CGST</th>
+                <td>&#8377;{{ invoice.cgst }}</td>
+            </tr>
+            <tr>
+                <th>SGST</th>
+                <td>&#8377;{{ invoice.sgst }}</td>
+            </tr>
+            {% endif %}
+            {% if invoice.rounding_adjustment != 0 %}
+            <tr>
+                <th style="color: #94a3b8; font-style: italic;">Rounding</th>
+                <td style="text-align: right; font-weight: bold;">&#8377;{{ invoice.rounding_adjustment }}</td>
+            </tr>
+            {% endif %}
+            <tr class="grand-total">
+                <th style="color: white; padding: 15px;">TOTAL AMOUNT</th>
+                <td style="color: white; padding: 15px; font-size: 20px;">&#8377;{{ invoice.total }}</td>
+            </tr>
+        </table>
+        {% if invoice.is_rcm_applicable %}
+        <div class="rcm-badge">REVERSE CHARGE APPLICABLE</div>
+        {% endif %}
+    </div>
+
+    <div class="qr-code">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=http://localhost:8000/api/public/invoices/{{ invoice.public_token }}/view/"
+            alt="QR Scan">
+        <p>SCAN TO VERIFY</p>
+    </div>
+
+    <div style="clear: both;"></div>
+
+    <div style="margin-top: 40px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+        {% if invoice.notes %}
+        <div style="margin-bottom: 15px;">
+            <strong style="font-size: 11px; color: #64748b; text-transform: uppercase;">Notes</strong>
+            <p style="font-size: 12px; margin-top: 5px;">{{ invoice.notes|linebreaksbr }}</p>
+        </div>
+        {% endif %}
+
+        {% if invoice.terms %}
+        <div>
+            <strong style="font-size: 11px; color: #64748b; text-transform: uppercase;">Terms & Conditions</strong>
+            <p style="font-size: 11px; color: #64748b; margin-top: 5px;">{{ invoice.terms|linebreaksbr }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        This is a digitally generated invoice by Saskell SaaS.<br>
+        No signature required. Verified for GST Compliance.
+    </div>
+</body>
+
+</html>
