@@ -16,10 +16,10 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
-    business_name = serializers.CharField()
-    gstin = serializers.CharField(max_length=15)
-    state = serializers.CharField()
-    address = serializers.CharField()
+    business_name = serializers.CharField(write_only=True)
+    gstin = serializers.CharField(max_length=15, write_only=True)
+    state = serializers.CharField(write_only=True)
+    address = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
         business = Business.objects.create(
