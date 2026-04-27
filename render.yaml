@@ -21,4 +21,3 @@ services:
 databases:
   - name: gst-saas-db
     databaseName: gst_saas
-    user: postgres
